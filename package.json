@@ -1,0 +1,11 @@
+{
+  "name": "45",
+  "version": "0.0.1",
+  "description": "An interactive history of the 45th USA presidential campaign and administration, told through Google Trends",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "J. Alex Ruble",
+  "license": "MIT"
+}
