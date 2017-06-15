@@ -4,8 +4,23 @@
   "description": "An interactive history of the 45th USA presidential campaign and administration, told through Google Trends",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "start": "nodemon ./server/deploy.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Calamitizer/45.git"
   },
   "author": "J. Alex Ruble",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "google-trends-api": "^4.1.0",
+    "morgan": "^1.8.2"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "nodemon": "^1.11.0"
+  }
 }

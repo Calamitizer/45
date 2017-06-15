@@ -54,6 +54,16 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
+### Custom ###
+
+# vim swap files
+*.swp
+
+# dotenv variables
 .env
 
+# Heroku debug log
+npm-debug.log
+
+# Scratch
+tasks
