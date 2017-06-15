@@ -60,7 +60,7 @@ typings/
 *.swp
 
 # dotenv variables
-.env
+*.env
 
 # Heroku debug log
 npm-debug.log
