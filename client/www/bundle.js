@@ -50,6 +50,7 @@
 	    var d3 = __webpack_require__(1);
 	    var googleTrends = __webpack_require__(2);
 
+	    console.log('Entry.js running');
 
 	    d3
 	        .select('body')

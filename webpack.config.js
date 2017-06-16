@@ -4,11 +4,13 @@
     var path = require('path');
 
     module.exports = {
+        context: __dirname,
         entry: path.join(__dirname, 'client', 'src', 'entry.js'),
         output: {
-            filename: 'bundle.js',
             path: path.join(__dirname, 'client', 'www'),
+            filename: 'bundle.js',
         },
+        watch: true,
     };
 
 }());

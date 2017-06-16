@@ -6,6 +6,7 @@
     var del = require('del');
     var replace = require('gulp-replace');
     var webpack = require('webpack-stream');
+    var sequence = require('run-sequence');
 
     var wpConfig = require(path.join(__dirname, 'webpack.config.js'));
 
@@ -45,6 +46,10 @@
         });
     });
 
+    gulp.task('lint', function() {
+        /* */
+    });
+
     gulp.task('html', function() {
         var target = '<!-- inject:js -->';
         var injection = '<script type="text/javascript" src="bundle.js"></script>';
@@ -65,6 +70,25 @@
                 .src(files.js.in)
                 .pipe(webpack(wpConfig))
                 .pipe(gulp.dest(dir.out))
+        );
+    });
+
+    gulp.task('json', function() {
+        /* */
+    });
+
+    gulp.task('build', function() {
+        sequence(
+            [
+                'clean',
+                'lint',
+            ],
+            [
+                'html',
+                'less',
+                'js',
+                'json',
+            ]
         );
     });
 
