@@ -18,8 +18,10 @@
         extended: true,
     }));
 
+    var assetRouter = require('./routers/asset.js');
     var siteRouter = require('./routers/site.js');
 
+    xlv.use('/', assetRouter);
     xlv.use('/', siteRouter);
 
     var port = process.env.PORT || 4545;

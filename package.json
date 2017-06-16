@@ -4,12 +4,12 @@
   "description": "An interactive history of the 45th USA presidential campaign and administration, told through Google Trends",
   "main": "index.js",
   "scripts": {
-      "start": "node ./server/deploy.js",
-      "start-dev": "nodemon ./server/deploy.js"
+    "start": "node ./server/deploy.js",
+    "start-dev": "nodemon ./server/deploy.js"
   },
   "engines": {
-      "node": "6.2.2",
-      "npm": "3.10.5"
+    "node": "6.2.2",
+    "npm": "3.10.5"
   },
   "repository": {
     "type": "git",
@@ -19,10 +19,12 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "d3": "^4.9.1",
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
     "google-trends-api": "^4.1.0",
-    "morgan": "^1.8.2"
+    "morgan": "^1.8.2",
+    "serve-static": "^1.12.3"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
