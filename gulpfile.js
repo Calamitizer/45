@@ -22,8 +22,8 @@
                 path.join(dir.in, '**', '*.html'),
             ],
         },
-        js: {
-            in: path.join(dir.in, 'entry.js'),
+        jsx: {
+            in: path.join(dir.in, 'entry.jsx'),
             out: path.join(dir.out, 'bundle.js'),
         },
     };
@@ -67,7 +67,7 @@
     gulp.task('js', function() {
         return (
             gulp
-                .src(files.js.in)
+                .src(files.jsx.in)
                 .pipe(webpack(wpConfig))
                 .pipe(gulp.dest(dir.out))
         );
@@ -91,5 +91,4 @@
             ]
         );
     });
-
 }());

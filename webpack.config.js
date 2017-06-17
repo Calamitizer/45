@@ -3,14 +3,30 @@
 
     var path = require('path');
 
-    module.exports = {
+    var dir = {
+        in: path.join(__dirname, 'client', 'src'),
+        out: path.join(__dirname, 'client', 'www'),
+    };
+
+    var config = {
         context: __dirname,
-        entry: path.join(__dirname, 'client', 'src', 'entry.js'),
+        entry: path.join(dir.in, 'entry.jsx'),
         output: {
-            path: path.join(__dirname, 'client', 'www'),
+            path: dir.out,
             filename: 'bundle.js',
+        },
+        module: {
+            loaders: [
+                {
+                    test: /\.jsx?$/,
+                    include: dir.in,
+                    exclude: /node_modules/,
+                    loader: 'babel',
+                },
+            ],
         },
         watch: true,
     };
 
+    module.exports = config;
 }());
