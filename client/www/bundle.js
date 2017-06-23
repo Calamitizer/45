@@ -63,10 +63,35 @@
 	    var d3 = __webpack_require__(186);
 	    var googleTrends = __webpack_require__(187);
 
+	    var trendChart = __webpack_require__(226);
+
+	    var xlv = xlv || {};
+
 	    console.log('Entry.js has started running');
 
-	    var App = function (_React$Component) {
-	        _inherits(App, _React$Component);
+	    var Counter = __webpack_require__(227);
+
+	    var Trend = function (_React$Component) {
+	        _inherits(Trend, _React$Component);
+
+	        function Trend() {
+	            _classCallCheck(this, Trend);
+
+	            return _possibleConstructorReturn(this, (Trend.__proto__ || Object.getPrototypeOf(Trend)).apply(this, arguments));
+	        }
+
+	        _createClass(Trend, [{
+	            key: 'render',
+	            value: function render() {
+	                /* */
+	            }
+	        }]);
+
+	        return Trend;
+	    }(React.Component);
+
+	    var App = function (_React$Component2) {
+	        _inherits(App, _React$Component2);
 
 	        function App() {
 	            _classCallCheck(this, App);
@@ -78,9 +103,14 @@
 	            key: 'render',
 	            value: function render() {
 	                return React.createElement(
-	                    'h1',
+	                    'div',
 	                    null,
-	                    'Hello, America!'
+	                    React.createElement(
+	                        'h1',
+	                        null,
+	                        'Hello, America!'
+	                    ),
+	                    React.createElement(Counter, null)
 	                );
 	            }
 	        }]);
@@ -90,17 +120,23 @@
 
 	    ReactDOM.render(React.createElement(App, null), document.getElementById('mount-point'));
 
-	    var nums = [1, 2, 3, 4];
-	    var numsb = nums.map(function (v) {
-	        return v + 1;
+	    // ReactDOM.render(<App />, document.getElementById('mount-point'));
+
+	    function render() {
+	        ReactDOM.render(React.createElement(TrendGraph, { model: trend }), document.getElementByClassName(uuid));
+	    }
+
+	    var data = [{ date: '1', price: 4 }, { date: '2', price: 8 }, { date: '3', price: 15 }, { date: '4', price: 16 }, { date: '5', price: 23 }, { date: '6', price: 42 }];
+
+	    var chart = trendChart().x(function (d) {
+	        return +d.date;
+	    }).y(function (d) {
+	        return +d.price;
 	    });
 
-	    /*
-	    d3
-	        .select('body')
-	        .append('p')
-	        .text('I\'m dynamically generated!');
-	    */
+	    d3.select('#example').append('div').datum(data).call(chart);
+
+	    d3.select('body').append('p').text('I\'m dynamically generated!');
 	})();
 
 /***/ }),
@@ -46615,6 +46651,195 @@
 	         encodeURIComponent(stringifyPrimitive(obj));
 	};
 
+
+/***/ }),
+/* 226 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	(function () {
+	    'use strict';
+
+	    var d3 = __webpack_require__(186);
+
+	    function trendChart() {
+	        var margin = {
+	            top: 0,
+	            right: 0,
+	            bottom: 0,
+	            left: 0
+	        };
+	        var width = 1000;
+	        var height = 500;
+	        var xValue = function xValue(d) {
+	            return d[0];
+	        };
+	        var yValue = function yValue(d) {
+	            return d[1];
+	        };
+	        var xScale = d3.scaleLinear();
+	        var yScale = d3.scaleLinear();
+	        var xAxis = d3.axisBottom(xScale).ticks(6, 0);
+	        var area = d3.area().x(X).y1(Y);
+	        var line = d3.line().x(X).y(Y);
+
+	        function chart(selection) {
+	            console.log('Chart() called');
+	            selection.each(function (data) {
+	                data = data.map(function (d, i) {
+	                    return [xValue.call(data, d, i), yValue.call(data, d, i)];
+	                });
+
+	                var xDomain = d3.extent(data, function (d) {
+	                    return d[0];
+	                });
+
+	                xScale.domain(xDomain).range([0, width - margin.left - margin.right]);
+
+	                var yDomain = [0, d3.max(data, function (d) {
+	                    return d[1];
+	                })];
+
+	                yScale.domain(yDomain).range([height - margin.top - margin.bottom, 0]);
+
+	                console.log('data: ');
+	                console.log(data);
+
+	                var svg = d3.select(this).selectAll('svg').data([data]).enter().append('svg').attr('class', 'trend-chart').attr('width', width).attr('height', height);
+
+	                var gEnter = svg.append('g').attr('class', 'inner-g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+	                gEnter.append('path').attr('class', 'area');
+
+	                gEnter.append('path').attr('class', 'line');
+
+	                gEnter.append('g').attr('class', 'x axis');
+
+	                gEnter.select('.area').attr('d', area.y0(yScale.range()[0]));
+
+	                gEnter.select('.line').attr('d', line);
+
+	                gEnter.select('.x.axis').attr('transform', 'translate(0,' + yScale.range()[0] + ')').call(xAxis);
+	            });
+	        }
+
+	        function X(d) {
+	            return xScale(d[0]);
+	        }
+
+	        function Y(d) {
+	            return yScale(d[1]);
+	        }
+
+	        chart.margin = function (_) {
+	            if (!arguments.length) return margin;
+	            margin = _;
+	            return chart;
+	        };
+
+	        chart.width = function (_) {
+	            if (!arguments.length) return width;
+	            width = _;
+	            return chart;
+	        };
+
+	        chart.height = function (_) {
+	            if (!arguments.length) return height;
+	            height = _;
+	            return chart;
+	        };
+
+	        chart.x = function (_) {
+	            if (!arguments.length) return xValue;
+	            xValue = _;
+	            return chart;
+	        };
+
+	        chart.y = function (_) {
+	            if (!arguments.length) return yValue;
+	            yValue = _;
+	            return chart;
+	        };
+
+	        return chart;
+	    }
+
+	    module.exports = trendChart;
+	})();
+
+/***/ }),
+/* 227 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	(function () {
+	    'use strict';
+
+	    var React = __webpack_require__(1);
+
+	    var Counter = function (_React$Component) {
+	        _inherits(Counter, _React$Component);
+
+	        function Counter(props) {
+	            _classCallCheck(this, Counter);
+
+	            var _this = _possibleConstructorReturn(this, (Counter.__proto__ || Object.getPrototypeOf(Counter)).call(this, props));
+
+	            _this.state = {
+	                count: 0
+	            };
+	            _this.onLike = _this.onLike.bind(_this);
+	            return _this;
+	        }
+
+	        _createClass(Counter, [{
+	            key: 'onLike',
+	            value: function onLike() {
+	                var newCount = this.state.count + 1;
+	                this.setState({
+	                    count: newCount
+	                });
+	            }
+	        }, {
+	            key: 'render',
+	            value: function render() {
+	                return React.createElement(
+	                    'div',
+	                    null,
+	                    'Likes: ',
+	                    React.createElement(
+	                        'span',
+	                        null,
+	                        this.state.count
+	                    ),
+	                    React.createElement(
+	                        'div',
+	                        null,
+	                        React.createElement(
+	                            'button',
+	                            { onClick: this.onLike },
+	                            'Like'
+	                        )
+	                    )
+	                );
+	            }
+	        }]);
+
+	        return Counter;
+	    }(React.Component);
+
+	    module.exports = Counter;
+	})();
 
 /***/ })
 /******/ ]);

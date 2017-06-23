@@ -5,6 +5,10 @@
     var path = require('path');
     var del = require('del');
     var replace = require('gulp-replace');
+    var less = require('gulp-less');
+    var cssmin = require('gulp-cssmin');
+    var concat = require('gulp-concat');
+    var rename = require('gulp-rename');
     var webpack = require('webpack-stream');
     var sequence = require('run-sequence');
 
@@ -20,6 +24,11 @@
         html: {
             in: [
                 path.join(dir.in, '**', '*.html'),
+            ],
+        },
+        less: {
+            in: [
+                path.join(dir.in, '**', '*.less'),
             ],
         },
         jsx: {
@@ -61,7 +70,17 @@
     });
 
     gulp.task('less', function() {
-        /* */
+        return (
+            gulp
+                .src(files.less.in)
+                .pipe(less())
+                .pipe(concat('style.css'))
+                .pipe(cssmin())
+                .pipe(rename({
+                    suffix: '.min',
+                }))
+                .pipe(gulp.dest(dir.out))
+        );
     });
 
     gulp.task('js', function() {
