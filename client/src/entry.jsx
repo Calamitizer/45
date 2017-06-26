@@ -15,11 +15,16 @@
 
     var Counter = require('./counter.jsx');
 
+    /*
     class Trend extends React.Component {
         render() {
-            /* */
+            //
         }
     }
+    */
+
+    var TrendChart = React.createClass({
+        p
 
     class App extends React.Component {
         render() {
