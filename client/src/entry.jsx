@@ -1,37 +1,26 @@
 (function() {
     'use strict';
 
-    var React = require('react');
-    var ReactDOM = require('react-dom');
+    const React = require('react');
+    const ReactDOM = require('react-dom');
 
-    var d3 = require('d3');
-    var googleTrends = require('google-trends-api');
+    const d3 = require('d3');
+    const googleTrends = require('google-trends-api');
 
-    var trendChart = require('./trend-chart/trend-chart.js');
-
-    var xlv = xlv || {};
+    const TrendContainer = require('./trend-chart/trend-container.jsx');
 
     console.log('Entry.js has started running');
 
-    var Counter = require('./counter.jsx');
-
-    /*
-    class Trend extends React.Component {
-        render() {
-            //
-        }
-    }
-    */
-
-    var TrendChart = React.createClass({
-        p
-
     class App extends React.Component {
+        constructor(props) {
+            super(props);
+        }
+
         render() {
             return (
                 <div>
                     <h1>Hello, America!</h1>
-                    <Counter />
+                    <TrendContainer keyword="christmas" />
                 </div>
             );
         }
@@ -57,6 +46,7 @@
         { date: '6', price: 42, },
     ];
 
+    /*
     var chart = trendChart()
         .x(d => +d.date)
         .y(d => +d.price);
@@ -66,9 +56,10 @@
         .append('div')
         .datum(data)
         .call(chart);
+    */
 
     d3
         .select('body')
         .append('p')
-        .text('I\'m dynamically generated!');
+        .text('I\'m dynamically generated');
 }());
