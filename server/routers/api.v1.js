@@ -10,7 +10,7 @@
     var apiRouter = express.Router();
 
     var apiRE = (function() {
-        var indexRE = 'by(time|region)';
+        var indexRE = 'by(time)';
         var keywordRE = '(\\w+)';
         var timestampRE = [
             '(',
@@ -59,7 +59,9 @@
         .get(apiRE, function(req, res) {
             var keyword = req.params[1];
             var times = parseTimes(req.params[2], req.params[3]);
-            trendByTime(keyword, times).then(res.json);
+            trendByTime(keyword, times).then(function(data) {
+                res.json(data);
+            });
         });
 
     module.exports = apiRouter;

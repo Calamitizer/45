@@ -18,6 +18,7 @@
 
     var tabulate = function(results) {
         var linearize = function(datum) {
+            console.log(datum);
             return [
                 datum.time,
                 datum.value,
