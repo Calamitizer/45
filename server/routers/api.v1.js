@@ -6,12 +6,22 @@
     var trendByTime = require('../methods/fetch-trend-by-time.js');
 
     var defaultChar = 'x';
+    var keywordSepChar = '&';
 
     var apiRouter = express.Router();
 
     var apiRE = (function() {
         var indexRE = 'by(time)';
-        var keywordRE = '(\\w+)';
+        var keywordRE = [
+            '(',
+            '\\w+',
+            '(?:',
+            keywordSepChar,
+            '\\w+',
+            ')',
+            '{0,4}',
+            ')',
+        ].join('');
         var timestampRE = [
             '(',
             '\\d{10}',
@@ -36,30 +46,34 @@
         return re;
     }());
 
-    var parseTimes = function(start, stop) {
+    var parseKeywords = function(kwParam) {
+        var keywords = kwParam.split(keywordSepChar);
+        return keywords;
+    };
+
+    var parseTimes = function(startParam, stopParam) {
         var times = {};
 
-        if (start !== defaultChar) {
-            times.start = start;
+        if (startParam !== defaultChar) {
+            times.start = startParam;
         }
 
-        if (stop !== defaultChar) {
-            times.stop = stop;
+        if (stopParam !== defaultChar) {
+            times.stop = stopParam;
         }
 
         return times;
     };
 
-    console.log(apiRE);
     apiRouter
         .use(function(req, res, next) {
             console.log('API request made');
             next();
         })
         .get(apiRE, function(req, res) {
-            var keyword = req.params[1];
+            var keywords = parseKeywords(req.params[1]);
             var times = parseTimes(req.params[2], req.params[3]);
-            trendByTime(keyword, times).then(function(data) {
+            trendByTime(keywords, times).then(function(data) {
                 res.json(data);
             });
         });

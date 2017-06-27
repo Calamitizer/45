@@ -2,45 +2,77 @@
     'use strict';
 
     const React = require('react');
-    const ReactFauxDOM = require('react-faux-dom');
-    const propTypes = require('prop-types');
-    const d3 = require('d3');
+    const PropTypes = require('prop-types');
     const axios = require('axios');
 
-    const chartFactory = require('./chart-factory.js');
+    const TrendChart = require('./trend-chart.jsx');
 
-    const data = [
-        { date: '1', price: 4, },
-        { date: '2', price: 8, },
-        { date: '3', price: 15, },
-        { date: '4', price: 16, },
-        { date: '5', price: 23, },
-        { date: '6', price: 42, },
-    ];
+    const defaultProps = {
+        width: 960,
+        height: 500,
+        margin: {
+            top: 20,
+            right: 30,
+            bottom: 20,
+            left: 30,
+        },
+    };
 
+    const propTypes = {
+        keyword: PropTypes.string.isRequired,
+        width: PropTypes.number,
+        height: PropTypes.number,
+        margin: PropTypes.shape({
+            top: PropTypes.number,
+            right: PropTypes.number,
+            bottom: PropTypes.number,
+            left: PropTypes.number,
+        }),
+    };
 
     class Trend extends React.Component {
         constructor(props) {
             super(props);
+            this.state = {
+                data: [],
+                dataLoaded: false,
+            };
+        }
+
+        static defaultProps = defaultProps
+        static propTypes = propTypes
+
+        componentDidMount() {
+            var uri = `/api/v1/bytime/${this.props.keyword}/x/x/`;
+            axios
+                .get(uri)
+                .then(res => {
+                    this.setState({
+                        data: res.data,
+                        dataLoaded: true,
+                    });
+                });
         }
 
         render() {
-            const div = new ReactFauxDOM.Element('div');
-            var chart = chartFactory()
-                .margin({
-                    top: 20,
-                    right: 20,
-                    bottom: 20,
-                    left: 20,
-                })
-                .x(d => +d[0])
-                .y(d => +d[1][0]);
-            d3
-                .select(div)
-                .datum(this.props.data)
-                .call(chart);
+            const {
+                keyword,
+                width,
+                height,
+                margin,
+            } = this.props;
 
-            return div.toReact();
+            return (
+                <div>
+                    <TrendChart
+                        keyword={keyword}
+                        width={width}
+                        height={height}
+                        margin={margin}
+                        data={this.state.data}
+                    />
+                </div>
+            );
         }
     }
 

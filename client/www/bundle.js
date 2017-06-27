@@ -63,7 +63,7 @@
 	    var d3 = __webpack_require__(186);
 	    var googleTrends = __webpack_require__(187);
 
-	    var TrendContainer = __webpack_require__(226);
+	    var Trend = __webpack_require__(226);
 
 	    console.log('Entry.js has started running');
 
@@ -87,7 +87,7 @@
 	                        null,
 	                        'Hello, America!'
 	                    ),
-	                    React.createElement(TrendContainer, { keyword: 'christmas' })
+	                    React.createElement(Trend, { keyword: 'christmas&easter' })
 	                );
 	            }
 	        }]);
@@ -102,19 +102,6 @@
 	    function render() {
 	        ReactDOM.render(React.createElement(TrendGraph, { model: trend }), document.getElementByClassName(uuid));
 	    }
-
-	    var data = [{ date: '1', price: 4 }, { date: '2', price: 8 }, { date: '3', price: 15 }, { date: '4', price: 16 }, { date: '5', price: 23 }, { date: '6', price: 42 }];
-
-	    /*
-	    var chart = trendChart()
-	        .x(d => +d.date)
-	        .y(d => +d.price);
-	     d3
-	        .select('#example')
-	        .append('div')
-	        .datum(data)
-	        .call(chart);
-	    */
 
 	    d3.select('body').append('p').text('I\'m dynamically generated');
 	})();
@@ -46650,25 +46637,50 @@
 	    'use strict';
 
 	    var React = __webpack_require__(1);
-	    var axios = __webpack_require__(227);
+	    var PropTypes = __webpack_require__(227);
+	    var axios = __webpack_require__(229);
 
-	    var Trend = __webpack_require__(253);
+	    var TrendChart = __webpack_require__(255);
 
-	    var TrendContainer = function (_React$Component) {
-	        _inherits(TrendContainer, _React$Component);
+	    var defaultProps = {
+	        width: 960,
+	        height: 500,
+	        margin: {
+	            top: 20,
+	            right: 30,
+	            bottom: 20,
+	            left: 30
+	        }
+	    };
 
-	        function TrendContainer(props) {
-	            _classCallCheck(this, TrendContainer);
+	    var propTypes = {
+	        keyword: PropTypes.string.isRequired,
+	        width: PropTypes.number,
+	        height: PropTypes.number,
+	        margin: PropTypes.shape({
+	            top: PropTypes.number,
+	            right: PropTypes.number,
+	            bottom: PropTypes.number,
+	            left: PropTypes.number
+	        })
+	    };
 
-	            var _this = _possibleConstructorReturn(this, (TrendContainer.__proto__ || Object.getPrototypeOf(TrendContainer)).call(this, props));
+	    var Trend = function (_React$Component) {
+	        _inherits(Trend, _React$Component);
+
+	        function Trend(props) {
+	            _classCallCheck(this, Trend);
+
+	            var _this = _possibleConstructorReturn(this, (Trend.__proto__ || Object.getPrototypeOf(Trend)).call(this, props));
 
 	            _this.state = {
-	                data: []
+	                data: [],
+	                dataLoaded: false
 	            };
 	            return _this;
 	        }
 
-	        _createClass(TrendContainer, [{
+	        _createClass(Trend, [{
 	            key: 'componentDidMount',
 	            value: function componentDidMount() {
 	                var _this2 = this;
@@ -46676,39 +46688,163 @@
 	                var uri = '/api/v1/bytime/' + this.props.keyword + '/x/x/';
 	                axios.get(uri).then(function (res) {
 	                    _this2.setState({
-	                        data: res.data
+	                        data: res.data,
+	                        dataLoaded: true
 	                    });
 	                });
 	            }
 	        }, {
 	            key: 'render',
 	            value: function render() {
-	                return React.createElement(Trend, { data: this.state.data });
+	                var _props = this.props,
+	                    keyword = _props.keyword,
+	                    width = _props.width,
+	                    height = _props.height,
+	                    margin = _props.margin;
+
+
+	                return React.createElement(
+	                    'div',
+	                    null,
+	                    React.createElement(TrendChart, {
+	                        keyword: keyword,
+	                        width: width,
+	                        height: height,
+	                        margin: margin,
+	                        data: this.state.data
+	                    })
+	                );
 	            }
 	        }]);
 
-	        return TrendContainer;
+	        return Trend;
 	    }(React.Component);
 
-	    module.exports = TrendContainer;
+	    Trend.defaultProps = defaultProps;
+	    Trend.propTypes = propTypes;
+
+
+	    module.exports = Trend;
 	})();
 
 /***/ }),
 /* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(228);
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	if (process.env.NODE_ENV !== 'production') {
+	  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
+	    Symbol.for &&
+	    Symbol.for('react.element')) ||
+	    0xeac7;
+
+	  var isValidElement = function(object) {
+	    return typeof object === 'object' &&
+	      object !== null &&
+	      object.$$typeof === REACT_ELEMENT_TYPE;
+	  };
+
+	  // By explicitly using `prop-types` you are opting into new development behavior.
+	  // http://fb.me/prop-types-in-prod
+	  var throwOnDirectAccess = true;
+	  module.exports = __webpack_require__(30)(isValidElement, throwOnDirectAccess);
+	} else {
+	  // By explicitly using `prop-types` you are opting into new production behavior.
+	  // http://fb.me/prop-types-in-prod
+	  module.exports = __webpack_require__(228)();
+	}
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
 /* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
 	'use strict';
 
-	var utils = __webpack_require__(229);
-	var bind = __webpack_require__(230);
-	var Axios = __webpack_require__(232);
-	var defaults = __webpack_require__(233);
+	var emptyFunction = __webpack_require__(9);
+	var invariant = __webpack_require__(12);
+	var ReactPropTypesSecret = __webpack_require__(31);
+
+	module.exports = function() {
+	  function shim(props, propName, componentName, location, propFullName, secret) {
+	    if (secret === ReactPropTypesSecret) {
+	      // It is still safe when called from React.
+	      return;
+	    }
+	    invariant(
+	      false,
+	      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+	      'Use PropTypes.checkPropTypes() to call them. ' +
+	      'Read more at http://fb.me/use-check-prop-types'
+	    );
+	  };
+	  shim.isRequired = shim;
+	  function getShim() {
+	    return shim;
+	  };
+	  // Important!
+	  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
+	  var ReactPropTypes = {
+	    array: shim,
+	    bool: shim,
+	    func: shim,
+	    number: shim,
+	    object: shim,
+	    string: shim,
+	    symbol: shim,
+
+	    any: shim,
+	    arrayOf: getShim,
+	    element: shim,
+	    instanceOf: getShim,
+	    node: shim,
+	    objectOf: getShim,
+	    oneOf: getShim,
+	    oneOfType: getShim,
+	    shape: getShim
+	  };
+
+	  ReactPropTypes.checkPropTypes = emptyFunction;
+	  ReactPropTypes.PropTypes = ReactPropTypes;
+
+	  return ReactPropTypes;
+	};
+
+
+/***/ }),
+/* 229 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(230);
+
+/***/ }),
+/* 230 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var utils = __webpack_require__(231);
+	var bind = __webpack_require__(232);
+	var Axios = __webpack_require__(234);
+	var defaults = __webpack_require__(235);
 
 	/**
 	 * Create an instance of Axios
@@ -46741,15 +46877,15 @@
 	};
 
 	// Expose Cancel & CancelToken
-	axios.Cancel = __webpack_require__(250);
-	axios.CancelToken = __webpack_require__(251);
-	axios.isCancel = __webpack_require__(247);
+	axios.Cancel = __webpack_require__(252);
+	axios.CancelToken = __webpack_require__(253);
+	axios.isCancel = __webpack_require__(249);
 
 	// Expose all/spread
 	axios.all = function all(promises) {
 	  return Promise.all(promises);
 	};
-	axios.spread = __webpack_require__(252);
+	axios.spread = __webpack_require__(254);
 
 	module.exports = axios;
 
@@ -46758,13 +46894,13 @@
 
 
 /***/ }),
-/* 229 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var bind = __webpack_require__(230);
-	var isBuffer = __webpack_require__(231);
+	var bind = __webpack_require__(232);
+	var isBuffer = __webpack_require__(233);
 
 	/*global toString:true*/
 
@@ -47067,7 +47203,7 @@
 
 
 /***/ }),
-/* 230 */
+/* 232 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -47084,7 +47220,7 @@
 
 
 /***/ }),
-/* 231 */
+/* 233 */
 /***/ (function(module, exports) {
 
 	/*!
@@ -47111,17 +47247,17 @@
 
 
 /***/ }),
-/* 232 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var defaults = __webpack_require__(233);
-	var utils = __webpack_require__(229);
-	var InterceptorManager = __webpack_require__(244);
-	var dispatchRequest = __webpack_require__(245);
-	var isAbsoluteURL = __webpack_require__(248);
-	var combineURLs = __webpack_require__(249);
+	var defaults = __webpack_require__(235);
+	var utils = __webpack_require__(231);
+	var InterceptorManager = __webpack_require__(246);
+	var dispatchRequest = __webpack_require__(247);
+	var isAbsoluteURL = __webpack_require__(250);
+	var combineURLs = __webpack_require__(251);
 
 	/**
 	 * Create a new instance of Axios
@@ -47203,13 +47339,13 @@
 
 
 /***/ }),
-/* 233 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(229);
-	var normalizeHeaderName = __webpack_require__(234);
+	var utils = __webpack_require__(231);
+	var normalizeHeaderName = __webpack_require__(236);
 
 	var DEFAULT_CONTENT_TYPE = {
 	  'Content-Type': 'application/x-www-form-urlencoded'
@@ -47225,10 +47361,10 @@
 	  var adapter;
 	  if (typeof XMLHttpRequest !== 'undefined') {
 	    // For browsers use XHR adapter
-	    adapter = __webpack_require__(235);
+	    adapter = __webpack_require__(237);
 	  } else if (typeof process !== 'undefined') {
 	    // For node use HTTP adapter
-	    adapter = __webpack_require__(235);
+	    adapter = __webpack_require__(237);
 	  }
 	  return adapter;
 	}
@@ -47302,12 +47438,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 234 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(229);
+	var utils = __webpack_require__(231);
 
 	module.exports = function normalizeHeaderName(headers, normalizedName) {
 	  utils.forEach(headers, function processHeader(value, name) {
@@ -47320,18 +47456,18 @@
 
 
 /***/ }),
-/* 235 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(229);
-	var settle = __webpack_require__(236);
-	var buildURL = __webpack_require__(239);
-	var parseHeaders = __webpack_require__(240);
-	var isURLSameOrigin = __webpack_require__(241);
-	var createError = __webpack_require__(237);
-	var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(242);
+	var utils = __webpack_require__(231);
+	var settle = __webpack_require__(238);
+	var buildURL = __webpack_require__(241);
+	var parseHeaders = __webpack_require__(242);
+	var isURLSameOrigin = __webpack_require__(243);
+	var createError = __webpack_require__(239);
+	var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(244);
 
 	module.exports = function xhrAdapter(config) {
 	  return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -47428,7 +47564,7 @@
 	    // This is only done if running in a standard browser environment.
 	    // Specifically not if we're in a web worker, or react-native.
 	    if (utils.isStandardBrowserEnv()) {
-	      var cookies = __webpack_require__(243);
+	      var cookies = __webpack_require__(245);
 
 	      // Add xsrf header
 	      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -47507,12 +47643,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 236 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var createError = __webpack_require__(237);
+	var createError = __webpack_require__(239);
 
 	/**
 	 * Resolve or reject a Promise based on response status.
@@ -47539,12 +47675,12 @@
 
 
 /***/ }),
-/* 237 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var enhanceError = __webpack_require__(238);
+	var enhanceError = __webpack_require__(240);
 
 	/**
 	 * Create an Error with the specified message, config, error code, request and response.
@@ -47563,7 +47699,7 @@
 
 
 /***/ }),
-/* 238 */
+/* 240 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -47590,12 +47726,12 @@
 
 
 /***/ }),
-/* 239 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(229);
+	var utils = __webpack_require__(231);
 
 	function encode(val) {
 	  return encodeURIComponent(val).
@@ -47664,12 +47800,12 @@
 
 
 /***/ }),
-/* 240 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(229);
+	var utils = __webpack_require__(231);
 
 	/**
 	 * Parse headers into an object
@@ -47707,12 +47843,12 @@
 
 
 /***/ }),
-/* 241 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(229);
+	var utils = __webpack_require__(231);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -47781,7 +47917,7 @@
 
 
 /***/ }),
-/* 242 */
+/* 244 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -47823,12 +47959,12 @@
 
 
 /***/ }),
-/* 243 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(229);
+	var utils = __webpack_require__(231);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -47882,12 +48018,12 @@
 
 
 /***/ }),
-/* 244 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(229);
+	var utils = __webpack_require__(231);
 
 	function InterceptorManager() {
 	  this.handlers = [];
@@ -47940,15 +48076,15 @@
 
 
 /***/ }),
-/* 245 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(229);
-	var transformData = __webpack_require__(246);
-	var isCancel = __webpack_require__(247);
-	var defaults = __webpack_require__(233);
+	var utils = __webpack_require__(231);
+	var transformData = __webpack_require__(248);
+	var isCancel = __webpack_require__(249);
+	var defaults = __webpack_require__(235);
 
 	/**
 	 * Throws a `Cancel` if cancellation has been requested.
@@ -48025,12 +48161,12 @@
 
 
 /***/ }),
-/* 246 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(229);
+	var utils = __webpack_require__(231);
 
 	/**
 	 * Transform the data for a request or a response
@@ -48051,7 +48187,7 @@
 
 
 /***/ }),
-/* 247 */
+/* 249 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -48062,7 +48198,7 @@
 
 
 /***/ }),
-/* 248 */
+/* 250 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -48082,7 +48218,7 @@
 
 
 /***/ }),
-/* 249 */
+/* 251 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -48102,7 +48238,7 @@
 
 
 /***/ }),
-/* 250 */
+/* 252 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -48127,12 +48263,12 @@
 
 
 /***/ }),
-/* 251 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Cancel = __webpack_require__(250);
+	var Cancel = __webpack_require__(252);
 
 	/**
 	 * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -48190,7 +48326,7 @@
 
 
 /***/ }),
-/* 252 */
+/* 254 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -48223,7 +48359,7 @@
 
 
 /***/ }),
-/* 253 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48240,57 +48376,63 @@
 	    'use strict';
 
 	    var React = __webpack_require__(1);
-	    var ReactFauxDOM = __webpack_require__(254);
-	    var propTypes = __webpack_require__(270);
+	    var ReactFauxDOM = __webpack_require__(256);
+	    var PropTypes = __webpack_require__(227);
 	    var d3 = __webpack_require__(186);
-	    var axios = __webpack_require__(227);
+	    var axios = __webpack_require__(229);
 
-	    var chartFactory = __webpack_require__(272);
+	    var trendChartFactory = __webpack_require__(272);
 
-	    var data = [{ date: '1', price: 4 }, { date: '2', price: 8 }, { date: '3', price: 15 }, { date: '4', price: 16 }, { date: '5', price: 23 }, { date: '6', price: 42 }];
+	    var propTypes = {
+	        keyword: PropTypes.string.isRequired,
+	        width: PropTypes.number.isRequired,
+	        height: PropTypes.number.isRequired,
+	        margin: PropTypes.shape({
+	            top: PropTypes.number.isRequired,
+	            right: PropTypes.number.isRequired,
+	            bottom: PropTypes.number.isRequired,
+	            left: PropTypes.number.isRequired
+	        }).isRequired
+	    };
 
-	    var Trend = function (_React$Component) {
-	        _inherits(Trend, _React$Component);
+	    var TrendChart = function (_React$Component) {
+	        _inherits(TrendChart, _React$Component);
 
-	        function Trend(props) {
-	            _classCallCheck(this, Trend);
+	        function TrendChart(props) {
+	            _classCallCheck(this, TrendChart);
 
-	            return _possibleConstructorReturn(this, (Trend.__proto__ || Object.getPrototypeOf(Trend)).call(this, props));
+	            return _possibleConstructorReturn(this, (TrendChart.__proto__ || Object.getPrototypeOf(TrendChart)).call(this, props));
 	        }
 
-	        _createClass(Trend, [{
+	        _createClass(TrendChart, [{
 	            key: 'render',
 	            value: function render() {
 	                var div = new ReactFauxDOM.Element('div');
-	                var chart = chartFactory().margin({
-	                    top: 20,
-	                    right: 20,
-	                    bottom: 20,
-	                    left: 20
-	                }).x(function (d) {
-	                    return +d[0];
-	                }).y(function (d) {
-	                    return +d[1][0];
-	                });
+
+	                var chart = trendChartFactory().numTrends(2).margin(this.props.margin);
+
 	                d3.select(div).datum(this.props.data).call(chart);
 
 	                return div.toReact();
 	            }
 	        }]);
 
-	        return Trend;
+	        return TrendChart;
 	    }(React.Component);
 
-	    module.exports = Trend;
+	    TrendChart.propTypes = propTypes;
+
+
+	    module.exports = TrendChart;
 	})();
 
 /***/ }),
-/* 254 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var Element = __webpack_require__(255)
-	var Window = __webpack_require__(267)
-	var withFauxDOM = __webpack_require__(268)
+	var Element = __webpack_require__(257)
+	var Window = __webpack_require__(269)
+	var withFauxDOM = __webpack_require__(270)
 
 	var ReactFauxDOM = {
 	  Element: Element,
@@ -48315,18 +48457,18 @@
 
 
 /***/ }),
-/* 255 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1)
-	var styleAttr = __webpack_require__(256)
-	var querySelectorAll = __webpack_require__(257)
-	var camelCase = __webpack_require__(261)
-	var isString = __webpack_require__(262)
-	var isUndefined = __webpack_require__(263)
-	var assign = __webpack_require__(264)
-	var mapValues = __webpack_require__(265)
-	var styleCamelCase = __webpack_require__(266)
+	var styleAttr = __webpack_require__(258)
+	var querySelectorAll = __webpack_require__(259)
+	var camelCase = __webpack_require__(263)
+	var isString = __webpack_require__(264)
+	var isUndefined = __webpack_require__(265)
+	var assign = __webpack_require__(266)
+	var mapValues = __webpack_require__(267)
+	var styleCamelCase = __webpack_require__(268)
 
 	function Element (nodeName, parentNode) {
 	  this.nodeName = nodeName
@@ -48685,7 +48827,7 @@
 
 
 /***/ }),
-/* 256 */
+/* 258 */
 /***/ (function(module, exports) {
 
 	
@@ -48820,13 +48962,13 @@
 	module.exports.normalize = normalize;
 
 /***/ }),
-/* 257 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(258);
+	module.exports = __webpack_require__(260);
 
 /***/ }),
-/* 258 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -48835,8 +48977,8 @@
 	 * @author yiminghe@gmail.com
 	 */
 
-	var util = __webpack_require__(259);
-	var parser = __webpack_require__(260);
+	var util = __webpack_require__(261);
+	var parser = __webpack_require__(262);
 
 	var EXPANDO_SELECTOR_KEY = '_ks_data_selector_id_',
 	  caches = {},
@@ -49529,7 +49671,7 @@
 	 */
 
 /***/ }),
-/* 259 */
+/* 261 */
 /***/ (function(module, exports) {
 
 	/**
@@ -49880,7 +50022,7 @@
 	};
 
 /***/ }),
-/* 260 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -51089,7 +51231,7 @@
 	}
 
 /***/ }),
-/* 261 */
+/* 263 */
 /***/ (function(module, exports) {
 
 	var hyphenExpression = /\-+([a-z])/gi
@@ -51112,7 +51254,7 @@
 
 
 /***/ }),
-/* 262 */
+/* 264 */
 /***/ (function(module, exports) {
 
 	function isString (value) {
@@ -51123,7 +51265,7 @@
 
 
 /***/ }),
-/* 263 */
+/* 265 */
 /***/ (function(module, exports) {
 
 	function isUndefined (value) {
@@ -51134,7 +51276,7 @@
 
 
 /***/ }),
-/* 264 */
+/* 266 */
 /***/ (function(module, exports) {
 
 	function assign (dest) {
@@ -51156,7 +51298,7 @@
 
 
 /***/ }),
-/* 265 */
+/* 267 */
 /***/ (function(module, exports) {
 
 	function mapValues (source, fn) {
@@ -51175,10 +51317,10 @@
 
 
 /***/ }),
-/* 266 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var camelCase = __webpack_require__(261)
+	var camelCase = __webpack_require__(263)
 
 	function styleCamelCase (name) {
 	  var camel = camelCase(name)
@@ -51201,7 +51343,7 @@
 
 
 /***/ }),
-/* 267 */
+/* 269 */
 /***/ (function(module, exports) {
 
 	var Window = {
@@ -51216,13 +51358,13 @@
 
 
 /***/ }),
-/* 268 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1)
-	var createReactClass = __webpack_require__(269)
-	var Element = __webpack_require__(255)
-	var mapValues = __webpack_require__(265)
+	var createReactClass = __webpack_require__(271)
+	var Element = __webpack_require__(257)
+	var mapValues = __webpack_require__(267)
 
 	function withFauxDOM (WrappedComponent) {
 	  var WithFauxDOM = createReactClass({
@@ -51287,7 +51429,7 @@
 
 
 /***/ }),
-/* 269 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -51323,108 +51465,6 @@
 
 
 /***/ }),
-/* 270 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
-	if (process.env.NODE_ENV !== 'production') {
-	  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
-	    Symbol.for &&
-	    Symbol.for('react.element')) ||
-	    0xeac7;
-
-	  var isValidElement = function(object) {
-	    return typeof object === 'object' &&
-	      object !== null &&
-	      object.$$typeof === REACT_ELEMENT_TYPE;
-	  };
-
-	  // By explicitly using `prop-types` you are opting into new development behavior.
-	  // http://fb.me/prop-types-in-prod
-	  var throwOnDirectAccess = true;
-	  module.exports = __webpack_require__(30)(isValidElement, throwOnDirectAccess);
-	} else {
-	  // By explicitly using `prop-types` you are opting into new production behavior.
-	  // http://fb.me/prop-types-in-prod
-	  module.exports = __webpack_require__(271)();
-	}
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
-
-/***/ }),
-/* 271 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
-	'use strict';
-
-	var emptyFunction = __webpack_require__(9);
-	var invariant = __webpack_require__(12);
-	var ReactPropTypesSecret = __webpack_require__(31);
-
-	module.exports = function() {
-	  function shim(props, propName, componentName, location, propFullName, secret) {
-	    if (secret === ReactPropTypesSecret) {
-	      // It is still safe when called from React.
-	      return;
-	    }
-	    invariant(
-	      false,
-	      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
-	      'Use PropTypes.checkPropTypes() to call them. ' +
-	      'Read more at http://fb.me/use-check-prop-types'
-	    );
-	  };
-	  shim.isRequired = shim;
-	  function getShim() {
-	    return shim;
-	  };
-	  // Important!
-	  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
-	  var ReactPropTypes = {
-	    array: shim,
-	    bool: shim,
-	    func: shim,
-	    number: shim,
-	    object: shim,
-	    string: shim,
-	    symbol: shim,
-
-	    any: shim,
-	    arrayOf: getShim,
-	    element: shim,
-	    instanceOf: getShim,
-	    node: shim,
-	    objectOf: getShim,
-	    oneOf: getShim,
-	    oneOfType: getShim,
-	    shape: getShim
-	  };
-
-	  ReactPropTypes.checkPropTypes = emptyFunction;
-	  ReactPropTypes.PropTypes = ReactPropTypes;
-
-	  return ReactPropTypes;
-	};
-
-
-/***/ }),
 /* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -51435,73 +51475,75 @@
 
 	    var d3 = __webpack_require__(186);
 
-	    function trendChart() {
+	    function trendChartFactory() {
 	        var margin = {
 	            top: 0,
 	            right: 0,
 	            bottom: 0,
 	            left: 0
 	        };
-	        var width = 1000;
+	        var width = 960;
 	        var height = 500;
+	        var numTrends = 0;
 	        var xValue = function xValue(d) {
 	            return d[0];
 	        };
-	        var yValue = function yValue(d) {
-	            return d[1];
-	        };
+	        var yValues = [];
 	        var xScale = d3.scaleLinear();
-	        var yScale = d3.scaleLinear();
+	        var yScales = [];
+	        var X = function X(d) {
+	            return xScale(xValue(d));
+	        };
+	        var Ys = [];
 	        var xAxis = d3.axisBottom(xScale).ticks(6, 0);
-	        var area = d3.area().x(X).y1(Y);
-	        var line = d3.line().x(X).y(Y);
+	        var lines = [];
+
+	        function doForEach(f) {
+	            Array.from(Array(numTrends), function (_, i) {
+	                f(i);
+	            });
+	        }
+
+	        function pushSeries(i) {
+	            yValues.push(function (d) {
+	                return d[1][i];
+	            });
+	            yScales.push(d3.scaleLinear());
+	            Ys.push(function (d) {
+	                return yScales[i](yValues[i](d));
+	            });
+	            lines.push(d3.line().x(X).y(Ys[i]));
+	        }
+
+	        function initSeries() {
+	            doForEach(pushSeries);
+	        }
 
 	        function chart(selection) {
 	            console.log('Chart() called');
 	            selection.each(function (data) {
-	                data = data.map(function (d, i) {
-	                    return [xValue.call(data, d, i), yValue.call(data, d, i)];
+	                initSeries();
+
+	                xScale.domain(d3.extent(data, xValue)).range([0, width - margin.left - margin.right]);
+
+	                doForEach(function (i) {
+	                    yScales[i].domain([0, d3.max(data, yValues[i])]).range([height - margin.top - margin.bottom, 0]);
 	                });
-
-	                var xDomain = d3.extent(data, function (d) {
-	                    return d[0];
-	                });
-
-	                xScale.domain(xDomain).range([0, width - margin.left - margin.right]);
-
-	                var yDomain = [0, d3.max(data, function (d) {
-	                    return d[1];
-	                })];
-
-	                yScale.domain(yDomain).range([height - margin.top - margin.bottom, 0]);
-
-	                console.log('data: ');
-	                console.log(data);
 
 	                var svg = d3.select(this).selectAll('svg').data([data]).enter().append('svg').attr('class', 'trend-chart').attr('width', width).attr('height', height);
 
-	                var gEnter = svg.append('g').attr('class', 'inner-g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+	                var gInner = svg.append('g').attr('class', 'inner-g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-	                gEnter.append('path').attr('class', 'area');
+	                doForEach(function (i) {
+	                    gInner.append('path').attr('class', 'line line-' + (i + 1)).attr('d', lines[i]);
+	                });
 
-	                gEnter.append('path').attr('class', 'line');
-
-	                gEnter.append('g').attr('class', 'x axis');
-
-	                gEnter.select('.area').attr('d', area.y0(yScale.range()[0]));
-
-	                gEnter.select('.line').attr('d', line);
-
-	                gEnter.select('.x.axis').attr('transform', 'translate(0,' + yScale.range()[0] + ')').call(xAxis);
+	                gInner.append('g').attr('class', 'x axis').attr('transform', 'translate(0,0)').call(xAxis);
 	            });
 	        }
 
 	        function X(d) {
 	            return xScale(d[0]);
-	        }
-
-	        function Y(d) {
-	            return yScale(d[1]);
 	        }
 
 	        chart.margin = function (_) {
@@ -51522,22 +51564,16 @@
 	            return chart;
 	        };
 
-	        chart.x = function (_) {
-	            if (!arguments.length) return xValue;
-	            xValue = _;
-	            return chart;
-	        };
-
-	        chart.y = function (_) {
-	            if (!arguments.length) return yValue;
-	            yValue = _;
+	        chart.numTrends = function (_) {
+	            if (!arguments.length) return numTrends;
+	            numTrends = _;
 	            return chart;
 	        };
 
 	        return chart;
 	    }
 
-	    module.exports = trendChart;
+	    module.exports = trendChartFactory;
 	})();
 
 /***/ })
