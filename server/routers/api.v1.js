@@ -3,10 +3,9 @@
 
     var express = require('express');
 
-    var trendByTime = require('../methods/fetch-trend-by-time.js');
+    var cf = require('../config.js');
 
-    var defaultChar = 'x';
-    var keywordSepChar = '&';
+    var trendByTime = require('../methods/fetch-trend-by-time.js');
 
     var apiRouter = express.Router();
 
@@ -16,7 +15,7 @@
             '(',
             '\\w+',
             '(?:',
-            keywordSepChar,
+            cf.char.keywordSep,
             '\\w+',
             ')',
             '{0,4}',
@@ -26,7 +25,7 @@
             '(',
             '\\d{10}',
             '|',
-            defaultChar,
+            cf.char.default,
             ')',
         ].join('');
         var maybeSlash = '(?:\\/)?';
@@ -47,18 +46,18 @@
     }());
 
     var parseKeywords = function(kwParam) {
-        var keywords = kwParam.split(keywordSepChar);
+        var keywords = kwParam.split(cf.char.keywordSep);
         return keywords;
     };
 
     var parseTimes = function(startParam, stopParam) {
         var times = {};
 
-        if (startParam !== defaultChar) {
+        if (startParam !== cf.char.default) {
             times.start = startParam;
         }
 
-        if (stopParam !== defaultChar) {
+        if (stopParam !== cf.char.default) {
             times.stop = stopParam;
         }
 

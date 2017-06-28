@@ -87,7 +87,7 @@
 	                        null,
 	                        'Hello, America!'
 	                    ),
-	                    React.createElement(Trend, { keyword: 'christmas&easter' })
+	                    React.createElement(Trend, { keyword: 'christmas&easter&halloween' })
 	                );
 	            }
 	        }]);
@@ -99,9 +99,14 @@
 
 	    // ReactDOM.render(<App />, document.getElementById('mount-point'));
 
+	    /*
 	    function render() {
-	        ReactDOM.render(React.createElement(TrendGraph, { model: trend }), document.getElementByClassName(uuid));
+	        ReactDOM.render(
+	            <TrendGraph model={trend} />,
+	            document.getElementByClassName(uuid)
+	        );
 	    }
+	    */
 
 	    d3.select('body').append('p').text('I\'m dynamically generated');
 	})();
@@ -46646,10 +46651,10 @@
 	        width: 960,
 	        height: 500,
 	        margin: {
-	            top: 20,
-	            right: 30,
-	            bottom: 20,
-	            left: 30
+	            top: 30,
+	            right: 60,
+	            bottom: 30,
+	            left: 60
 	        }
 	    };
 
@@ -46658,10 +46663,10 @@
 	        width: PropTypes.number,
 	        height: PropTypes.number,
 	        margin: PropTypes.shape({
-	            top: PropTypes.number,
-	            right: PropTypes.number,
-	            bottom: PropTypes.number,
-	            left: PropTypes.number
+	            top: PropTypes.number.isRequired,
+	            right: PropTypes.number.isRequired,
+	            bottom: PropTypes.number.isRequired,
+	            left: PropTypes.number.isRequired
 	        })
 	    };
 
@@ -46706,6 +46711,12 @@
 	                return React.createElement(
 	                    'div',
 	                    null,
+	                    React.createElement(
+	                        'h1',
+	                        null,
+	                        'Keywords: ',
+	                        keyword
+	                    ),
 	                    React.createElement(TrendChart, {
 	                        keyword: keyword,
 	                        width: width,
@@ -48405,11 +48416,16 @@
 	        }
 
 	        _createClass(TrendChart, [{
+	            key: 'unpackKeywords',
+	            value: function unpackKeywords() {
+	                return this.props.keyword.split('&');
+	            }
+	        }, {
 	            key: 'render',
 	            value: function render() {
 	                var div = new ReactFauxDOM.Element('div');
 
-	                var chart = trendChartFactory().numTrends(2).margin(this.props.margin);
+	                var chart = trendChartFactory().keywords(this.unpackKeywords()).margin(this.props.margin);
 
 	                d3.select(div).datum(this.props.data).call(chart);
 
@@ -51475,6 +51491,8 @@
 
 	    var d3 = __webpack_require__(186);
 
+	    var legendFactory = __webpack_require__(273);
+
 	    function trendChartFactory() {
 	        var margin = {
 	            top: 0,
@@ -51484,6 +51502,7 @@
 	        };
 	        var width = 960;
 	        var height = 500;
+	        var keywords = [];
 	        var numTrends = 0;
 	        var xValue = function xValue(d) {
 	            return d[0];
@@ -51520,17 +51539,16 @@
 	        }
 
 	        function chart(selection) {
-	            console.log('Chart() called');
 	            selection.each(function (data) {
 	                initSeries();
 
-	                xScale.domain(d3.extent(data, xValue)).range([0, width - margin.left - margin.right]);
+	                xScale.domain(d3.extent(data, xValue)).range([0, width]);
 
 	                doForEach(function (i) {
-	                    yScales[i].domain([0, d3.max(data, yValues[i])]).range([height - margin.top - margin.bottom, 0]);
+	                    yScales[i].domain([0, d3.max(data, yValues[i])]).range([height, 0]);
 	                });
 
-	                var svg = d3.select(this).selectAll('svg').data([data]).enter().append('svg').attr('class', 'trend-chart').attr('width', width).attr('height', height);
+	                var svg = d3.select(this).selectAll('svg').data([data]).enter().append('svg').attr('class', 'trend-chart-container').attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom);
 
 	                var gInner = svg.append('g').attr('class', 'inner-g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
@@ -51538,7 +51556,11 @@
 	                    gInner.append('path').attr('class', 'line line-' + (i + 1)).attr('d', lines[i]);
 	                });
 
-	                gInner.append('g').attr('class', 'x axis').attr('transform', 'translate(0,0)').call(xAxis);
+	                gInner.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')').call(xAxis);
+
+	                var legend = legendFactory().keywords(keywords);
+
+	                gInner.call(legend);
 	            });
 	        }
 
@@ -51546,27 +51568,32 @@
 	            return xScale(d[0]);
 	        }
 
-	        chart.margin = function (_) {
+	        chart.margin = function (m) {
 	            if (!arguments.length) return margin;
-	            margin = _;
+	            var dw = margin.left + margin.right - m.left - m.right;
+	            var dh = margin.top + margin.bottom - m.top - m.bottom;
+	            chart.width(width + dw);
+	            chart.height(height + dh);
+	            margin = m;
 	            return chart;
 	        };
 
-	        chart.width = function (_) {
+	        chart.width = function (w) {
 	            if (!arguments.length) return width;
-	            width = _;
+	            width = w - margin.left - margin.right;
 	            return chart;
 	        };
 
-	        chart.height = function (_) {
+	        chart.height = function (h) {
 	            if (!arguments.length) return height;
-	            height = _;
+	            height = h - margin.top - margin.bottom;
 	            return chart;
 	        };
 
-	        chart.numTrends = function (_) {
-	            if (!arguments.length) return numTrends;
-	            numTrends = _;
+	        chart.keywords = function (kws) {
+	            if (!arguments.length) return keywords;
+	            keywords = kws;
+	            numTrends = keywords.length;
 	            return chart;
 	        };
 
@@ -51574,6 +51601,57 @@
 	    }
 
 	    module.exports = trendChartFactory;
+	})();
+
+/***/ }),
+/* 273 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	(function () {
+	    'use strict';
+
+	    var d3 = __webpack_require__(186);
+
+	    var legendFactory = function legendFactory() {
+	        var margin = {
+	            top: 20,
+	            right: 20,
+	            bottom: 20,
+	            left: 20
+	        };
+	        var width = 120;
+	        var height = 60;
+	        var lineHeight = 30;
+	        var keywords = [];
+
+	        var drawLegend = function drawLegend(selection) {
+	            var legendContainer = selection.append('g').attr('class', 'legend').attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom);
+
+	            var border = legendContainer.append('rect').attr('class', 'legend-border').attr('x', 0).attr('y', 0).attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom);
+
+	            var legend = legendContainer.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+	            var key = legend.selectAll('g').data(keywords).enter().append('g').attr('class', 'legend-key').attr('transform', function (_, i) {
+	                return 'translate(0,' + i * lineHeight + ')';
+	            });
+
+	            var keyName = key.append('text').attr('class', 'legend-key-name').text(function (d) {
+	                return d;
+	            }).style('fill', '#000').style('stroke', 'none');
+	        };
+
+	        drawLegend.keywords = function (kws) {
+	            if (!arguments.length) return keywords;
+	            keywords = kws;
+	            return drawLegend;
+	        };
+
+	        return drawLegend;
+	    };
+
+	    module.exports = legendFactory;
 	})();
 
 /***/ })

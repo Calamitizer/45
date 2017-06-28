@@ -28,11 +28,15 @@
 
         static propTypes = propTypes
 
+        unpackKeywords() {
+            return this.props.keyword.split('&');
+        }
+
         render() {
             const div = new ReactFauxDOM.Element('div');
 
             var chart = trendChartFactory()
-                .numTrends(2)
+                .keywords(this.unpackKeywords())
                 .margin(this.props.margin);
 
             d3

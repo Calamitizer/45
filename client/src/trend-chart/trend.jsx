@@ -11,10 +11,10 @@
         width: 960,
         height: 500,
         margin: {
-            top: 20,
-            right: 30,
-            bottom: 20,
-            left: 30,
+            top: 30,
+            right: 60,
+            bottom: 30,
+            left: 60,
         },
     };
 
@@ -23,10 +23,10 @@
         width: PropTypes.number,
         height: PropTypes.number,
         margin: PropTypes.shape({
-            top: PropTypes.number,
-            right: PropTypes.number,
-            bottom: PropTypes.number,
-            left: PropTypes.number,
+            top: PropTypes.number.isRequired,
+            right: PropTypes.number.isRequired,
+            bottom: PropTypes.number.isRequired,
+            left: PropTypes.number.isRequired,
         }),
     };
 
@@ -64,6 +64,7 @@
 
             return (
                 <div>
+                    <h1>Keywords: {keyword}</h1>
                     <TrendChart
                         keyword={keyword}
                         width={width}

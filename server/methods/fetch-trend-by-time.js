@@ -40,11 +40,11 @@
         };
 
         if (Object.prototype.hasOwnProperty.call(times, 'start')) {
-            options.startTime = times.start;
+            options.startTime = new Date(times.start * 1000);
         }
 
         if (Object.prototype.hasOwnProperty.call(times, 'stop')) {
-            options.endTime = times.stop;
+            options.endTime = new Date(times.stop * 1000);
         }
 
         var trend = googleTrends

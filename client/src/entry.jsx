@@ -20,7 +20,7 @@
             return (
                 <div>
                     <h1>Hello, America!</h1>
-                    <Trend keyword="christmas&easter" />
+                    <Trend keyword="christmas&easter&halloween" />
                 </div>
             );
         }
@@ -30,12 +30,14 @@
 
     // ReactDOM.render(<App />, document.getElementById('mount-point'));
 
+    /*
     function render() {
         ReactDOM.render(
             <TrendGraph model={trend} />,
             document.getElementByClassName(uuid)
         );
     }
+    */
 
     d3
         .select('body')

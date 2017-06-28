@@ -3,6 +3,8 @@
 
     const d3 = require('d3');
 
+    const legendFactory = require('./legend-factory.js');
+
     function trendChartFactory() {
         var margin = {
             top: 0,
@@ -12,6 +14,7 @@
         };
         var width = 960;
         var height = 500;
+        var keywords = [];
         var numTrends = 0;
         var xValue = d => d[0];
         var yValues = [];
@@ -45,7 +48,6 @@
         }
 
         function chart(selection) {
-            console.log('Chart() called');
             selection.each(function(data) {
                 initSeries();
 
@@ -53,7 +55,7 @@
                     .domain(d3.extent(data, xValue))
                     .range([
                         0,
-                        width - margin.left - margin.right,
+                        width,
                     ]);
 
                 doForEach(i => {
@@ -63,7 +65,7 @@
                             d3.max(data, yValues[i]),
                         ])
                         .range([
-                            height - margin.top - margin.bottom,
+                            height,
                             0,
                         ]);
                 });
@@ -74,9 +76,9 @@
                     .data([data])
                     .enter()
                     .append('svg')
-                    .attr('class', 'trend-chart')
-                    .attr('width', width)
-                    .attr('height', height);
+                    .attr('class', 'trend-chart-container')
+                    .attr('width', width + margin.left + margin.right)
+                    .attr('height', height + margin.top + margin.bottom);
 
                 var gInner = svg
                     .append('g')
@@ -93,8 +95,14 @@
                 gInner
                     .append('g')
                     .attr('class', 'x axis')
-                    .attr('transform', `translate(0,0)`)
+                    .attr('transform', `translate(0,${height})`)
                     .call(xAxis);
+
+                var legend = legendFactory()
+                    .keywords(keywords);
+
+                gInner.call(legend);
+
             });
         }
 
@@ -102,27 +110,32 @@
             return xScale(d[0]);
         }
 
-        chart.margin = function(_) {
+        chart.margin = function(m) {
             if (!arguments.length) return margin;
-            margin = _;
+            var dw = margin.left + margin.right - m.left - m.right;
+            var dh = margin.top + margin.bottom - m.top - m.bottom;
+            chart.width(width + dw);
+            chart.height(height + dh);
+            margin = m;
             return chart;
         };
 
-        chart.width = function(_) {
+        chart.width = function(w) {
             if (!arguments.length) return width;
-            width = _;
+            width = w - margin.left - margin.right;
             return chart;
         };
 
-        chart.height = function(_) {
+        chart.height = function(h) {
             if (!arguments.length) return height;
-            height = _;
+            height = h - margin.top - margin.bottom;
             return chart;
         };
 
-        chart.numTrends = function(_) {
-            if (!arguments.length) return numTrends;
-            numTrends = _;
+        chart.keywords = function(kws) {
+            if (!arguments.length) return keywords;
+            keywords = kws;
+            numTrends = keywords.length;
             return chart;
         };
 
