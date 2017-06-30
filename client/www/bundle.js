@@ -51553,7 +51553,7 @@
 	                var gInner = svg.append('g').attr('class', 'inner-g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 	                doForEach(function (i) {
-	                    gInner.append('path').attr('class', 'line line-' + (i + 1)).attr('d', lines[i]);
+	                    gInner.append('path').attr('class', 'trend-line trend-line-' + (i + 1)).attr('d', lines[i]);
 	                });
 
 	                gInner.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')').call(xAxis);
@@ -51631,15 +51631,21 @@
 
 	            var border = legendContainer.append('rect').attr('class', 'legend-border').attr('x', 0).attr('y', 0).attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom);
 
-	            var legend = legendContainer.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+	            var legend = legendContainer.append('g').attr('class', 'legend-content').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 	            var key = legend.selectAll('g').data(keywords).enter().append('g').attr('class', 'legend-key').attr('transform', function (_, i) {
 	                return 'translate(0,' + i * lineHeight + ')';
 	            });
 
-	            var keyName = key.append('text').attr('class', 'legend-key-name').text(function (d) {
+	            var circleRadius = 5;
+	            var circlePadding = 5;
+	            var keyCircle = key.append('circle').attr('class', function (_, i) {
+	                return 'trend-key-circle trend-key-circle-' + (i + 1);
+	            }).attr('r', lineHeight / 2 - 6);
+
+	            var keyName = key.append('text').attr('class', 'legend-key-name').attr('transform', 'translate(' + (2 * circleRadius + circlePadding) + ',0)').text(function (d) {
 	                return d;
-	            }).style('fill', '#000').style('stroke', 'none');
+	            });
 	        };
 
 	        drawLegend.keywords = function (kws) {

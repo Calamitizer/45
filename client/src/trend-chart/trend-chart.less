@@ -6,26 +6,45 @@
     //
 }
 
-.line {
+.trend-line {
     fill: none;
     stroke: #000;
-    stroke-width: 1.5px;
+    sroke-width: 1.5px;
 }
 
-.line-1 {
-    stroke: #F00;
+@trend-colors: #F00, #0F0, #00F;
+
+.make-trend-lines(@i: length(@trend-colors)) when (@i > 0) {
+    .make-trend-lines(@i - 1);
+    @trend-color: extract(@trend-colors, @i);
+    .trend-line-@{i} {
+        stroke: @trend-color;
+    }
 }
 
-.line-2 {
-    stroke: #0F0;
+.make-trend-circles(@i: length(@trend-colors)) when (@i > 0) {
+    .make-trend-circles(@i - 1);
+    @trend-color: extract(@trend-colors, @i);
+    .trend-key-circle-@{i} {
+        fill: @trend-color;
+    }
 }
 
-.line-3 {
-    stroke: #00F;
-}
+.make-trend-lines();
+.make-trend-circles();
 
 .legend-border {
     stroke: #000;
     stroke-width: 2;
-    fill: none;
+    fill: #FFF;
+}
+
+.legend-content {
+    //
+}
+
+.legend-key-name {
+    dominant-baseline: middle;
+    fill: #000;
+    stroke: none;
 }

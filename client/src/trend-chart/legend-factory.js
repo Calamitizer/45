@@ -32,7 +32,8 @@
 
             var legend = legendContainer
                 .append('g')
-                .attr('transform', `translate(${margin.left},${margin.top})`);
+                .attr('class', 'legend-content')
+                .attr('transform', `translate(${margin.left},${margin.top})`)
 
             var key = legend
                 .selectAll('g')
@@ -42,12 +43,18 @@
                 .attr('class', 'legend-key')
                 .attr('transform', (_, i) => `translate(0,${i * lineHeight})`);
 
+            var circleRadius = 5;
+            var circlePadding = 5;
+            var keyCircle = key
+                .append('circle')
+                .attr('class', (_, i) => `trend-key-circle trend-key-circle-${i + 1}`)
+                .attr('r', (lineHeight / 2) - 6);
+
             var keyName = key
                 .append('text')
                 .attr('class', 'legend-key-name')
-                .text(d => d)
-                .style('fill', '#000')
-                .style('stroke', 'none');
+                .attr('transform', `translate(${(2 * circleRadius) + circlePadding},0)`)
+                .text(d => d);
         };
 
         drawLegend.keywords = function(kws) {

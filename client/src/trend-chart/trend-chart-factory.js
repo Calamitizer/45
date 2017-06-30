@@ -88,7 +88,7 @@
                 doForEach(i => {
                     gInner
                         .append('path')
-                        .attr('class', `line line-${i + 1}`)
+                        .attr('class', `trend-line trend-line-${i + 1}`)
                         .attr('d', lines[i]);
                 });
 
