@@ -3,6 +3,7 @@
 
     const d3 = require('d3');
 
+    const xlvParse = require('../xlv-parse.js');
     const legendFactory = require('./legend-factory.js');
 
     function trendChartFactory() {
@@ -65,6 +66,8 @@
             var bottom = d3
                 .axisBottom()
                 .scale(xScale)
+                .ticks(10, 0)
+                .tickFormat(xlvParse.getFormatter(xScale));
 
             var yScale = d3
                 .scaleLinear()
@@ -79,7 +82,7 @@
 
             var left = d3
                 .axisLeft()
-                .scale(yScale);
+                .scale(yScale)
 
             Object.assign(axes, {
                 bottom,

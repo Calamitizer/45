@@ -8,8 +8,8 @@
     const TrendChart = require('./trend-chart.jsx');
 
     const defaultProps = {
-        width: 960,
-        height: 500,
+        width: 1200,
+        height: 600,
         margin: {
             top: 30,
             right: 60,

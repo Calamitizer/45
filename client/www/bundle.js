@@ -46648,8 +46648,8 @@
 	    var TrendChart = __webpack_require__(255);
 
 	    var defaultProps = {
-	        width: 960,
-	        height: 500,
+	        width: 1200,
+	        height: 600,
 	        margin: {
 	            top: 30,
 	            right: 60,
@@ -48425,7 +48425,7 @@
 	            value: function render() {
 	                var div = new ReactFauxDOM.Element('div');
 
-	                var chart = trendChartFactory().keywords(this.unpackKeywords()).margin(this.props.margin);
+	                var chart = trendChartFactory().keywords(this.unpackKeywords()).margin(this.props.margin).width(this.props.width).height(this.props.height);
 
 	                d3.select(div).datum(this.props.data).call(chart);
 
@@ -51491,7 +51491,8 @@
 
 	    var d3 = __webpack_require__(186);
 
-	    var legendFactory = __webpack_require__(273);
+	    var xlvParse = __webpack_require__(273);
+	    var legendFactory = __webpack_require__(274);
 
 	    function trendChartFactory() {
 	        var margin = {
@@ -51553,7 +51554,7 @@
 	                //
 	            };
 
-	            var bottom = d3.axisBottom().scale(xScale);
+	            var bottom = d3.axisBottom().scale(xScale).ticks(10, 0).tickFormat(xlvParse.getFormatter(xScale));
 
 	            var yScale = d3.scaleLinear().domain([1, // the extrema of
 	            100]).range([height, 0]);
@@ -51646,6 +51647,94 @@
 
 /***/ }),
 /* 273 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	(function () {
+	    'use strict';
+
+	    var d3 = __webpack_require__(186);
+
+	    var capitalize = function capitalize(s) {
+	        return s.charAt(0).toUpperCase() + s.slice(1);
+	    };
+
+	    var kwA2S = function kwA2S(kwArray) {
+	        return kwArray.join('&');
+	    };
+
+	    var kwS2A = function kwS2A(kwString) {
+	        return kwString.split('&');
+	    };
+
+	    var resolutions = function () {
+	        var durations = {
+	            ms: 1,
+	            s: 1000,
+	            m: 1000 * 60,
+	            h: 1000 * 60 * 60,
+	            d: 1000 * 60 * 60 * 24,
+	            y: 1000 * 60 * 60 * 24 * 365
+	        };
+
+	        return [{
+	            name: 'minute',
+	            threshold: 0,
+	            format: '%-I:%S %p'
+	        }, {
+	            name: 'hour',
+	            threshold: 3 * durations.h,
+	            format: '%-I %p'
+	        }, {
+	            name: 'day',
+	            threshold: 3 * durations.d,
+	            format: '%-b. %d'
+	        }, {
+	            name: 'month',
+	            threshold: 3 * durations.m,
+	            format: '%-b. %Y'
+	        }, {
+	            name: 'year',
+	            threshold: 3 * durations.y,
+	            format: '%Y'
+	        }];
+	    }();
+
+	    var pickFormat = function pickFormat(diff) {
+	        var format = '';
+	        resolutions.forEach(function (res) {
+	            console.log(diff);
+	            console.log(res);
+	            console.log(res.threshold);
+	            if (diff >= res.threshold) {
+	                format = res.format;
+	            }
+	        });
+	        return format;
+	    };
+
+	    var getFormatter = function getFormatter(scale) {
+	        var domain = scale.domain();
+	        var difference = Math.abs(domain[1] - domain[0] // in ms
+	        );var format = pickFormat(difference);
+	        var formatter = d3.timeFormat(format);
+
+	        return formatter;
+	    };
+
+	    var xlvParse = {
+	        capitalize: capitalize,
+	        kwA2S: kwA2S,
+	        kwS2A: kwS2A,
+	        getFormatter: getFormatter
+	    };
+
+	    module.exports = xlvParse;
+	})();
+
+/***/ }),
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';

@@ -37,7 +37,9 @@
 
             var chart = trendChartFactory()
                 .keywords(this.unpackKeywords())
-                .margin(this.props.margin);
+                .margin(this.props.margin)
+                .width(this.props.width)
+                .height(this.props.height);
 
             d3
                 .select(div)
