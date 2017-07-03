@@ -16,16 +16,21 @@
         var height = 500;
         var keywords = [];
         var numTrends = 0;
-        var xValue = d => d[0];
+
+        var xValue = d => (typeof d !== 'undefined')
+            ? new Date((+d[0] * 1000))
+            : d;
+        var xScale = d3.scaleTime(); //date to position
+        var X = d => xScale(xValue(d)); //datum to position
+
         var yValues = [];
-        var xScale = d3.scaleLinear();
         var yScales = [];
-        var X = d => xScale(xValue(d));
         var Ys = [];
-        var xAxis = d3
-            .axisBottom(xScale)
-            .ticks(6, 0);
+
         var lines = [];
+
+        var legend;
+        var axes = {};
 
         function doForEach(f) {
             Array.from(Array(numTrends), (_, i) => {
@@ -47,12 +52,52 @@
             doForEach(pushSeries);
         }
 
+        function initLegend() {
+            legend = legendFactory().keywords(keywords);
+        }
+
+        function initAxes() {
+
+            var formatAxis = function(axis) {
+                //
+            };
+
+            var bottom = d3
+                .axisBottom()
+                .scale(xScale)
+
+            var yScale = d3
+                .scaleLinear()
+                .domain([
+                    1,   // the extrema of
+                    100, // Google Trends data
+                ])
+                .range([
+                    height,
+                    0,
+                ]);
+
+            var left = d3
+                .axisLeft()
+                .scale(yScale);
+
+            Object.assign(axes, {
+                bottom,
+                left,
+            });
+        }
+
         function chart(selection) {
             selection.each(function(data) {
+
+                // construct the appropriate number of scales, lines, &c.
                 initSeries();
 
+                initLegend();
+
+                // init scales wih data, and populate them to the axes
                 xScale
-                    .domain(d3.extent(data, xValue))
+                    .domain(d3.extent(data).map(xValue))
                     .range([
                         0,
                         width,
@@ -70,6 +115,9 @@
                         ]);
                 });
 
+                initAxes();
+
+                // start drawing the chart
                 var svg = d3
                     .select(this)
                     .selectAll('svg')
@@ -92,16 +140,20 @@
                         .attr('d', lines[i]);
                 });
 
-                gInner
-                    .append('g')
-                    .attr('class', 'x axis')
-                    .attr('transform', `translate(0,${height})`)
-                    .call(xAxis);
-
-                var legend = legendFactory()
-                    .keywords(keywords);
-
+                // append legend and axes
                 gInner.call(legend);
+
+                var axesTranslations = {
+                    bottom: `0,${height}`,
+                    left: '0,0',
+                };
+                for (var orientation in axes) {
+                    gInner
+                        .append('g')
+                        .attr('class', `trend-axis trend-axis-${orientation}`)
+                        .attr('transform', `translate(${axesTranslations[orientation]})`)
+                        .call(axes[orientation]);
+                }
 
             });
         }

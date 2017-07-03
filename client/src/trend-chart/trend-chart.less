@@ -14,24 +14,18 @@
 
 @trend-colors: #F00, #0F0, #00F;
 
-.make-trend-lines(@i: length(@trend-colors)) when (@i > 0) {
-    .make-trend-lines(@i - 1);
+.make-trend-colors(@i: length(@trend-colors)) when (@i > 0) {
+    .make-trend-colors(@i - 1);
     @trend-color: extract(@trend-colors, @i);
     .trend-line-@{i} {
         stroke: @trend-color;
     }
-}
-
-.make-trend-circles(@i: length(@trend-colors)) when (@i > 0) {
-    .make-trend-circles(@i - 1);
-    @trend-color: extract(@trend-colors, @i);
     .trend-key-circle-@{i} {
         fill: @trend-color;
     }
 }
 
-.make-trend-lines();
-.make-trend-circles();
+.make-trend-colors();
 
 .legend-border {
     stroke: #000;

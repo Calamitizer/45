@@ -51504,18 +51504,23 @@
 	        var height = 500;
 	        var keywords = [];
 	        var numTrends = 0;
+
 	        var xValue = function xValue(d) {
-	            return d[0];
+	            return typeof d !== 'undefined' ? new Date(+d[0] * 1000) : d;
 	        };
-	        var yValues = [];
-	        var xScale = d3.scaleLinear();
-	        var yScales = [];
+	        var xScale = d3.scaleTime(); //date to position
 	        var X = function X(d) {
 	            return xScale(xValue(d));
-	        };
+	        }; //datum to position
+
+	        var yValues = [];
+	        var yScales = [];
 	        var Ys = [];
-	        var xAxis = d3.axisBottom(xScale).ticks(6, 0);
+
 	        var lines = [];
+
+	        var legend;
+	        var axes = {};
 
 	        function doForEach(f) {
 	            Array.from(Array(numTrends), function (_, i) {
@@ -51538,16 +51543,47 @@
 	            doForEach(pushSeries);
 	        }
 
+	        function initLegend() {
+	            legend = legendFactory().keywords(keywords);
+	        }
+
+	        function initAxes() {
+
+	            var formatAxis = function formatAxis(axis) {
+	                //
+	            };
+
+	            var bottom = d3.axisBottom().scale(xScale);
+
+	            var yScale = d3.scaleLinear().domain([1, // the extrema of
+	            100]).range([height, 0]);
+
+	            var left = d3.axisLeft().scale(yScale);
+
+	            Object.assign(axes, {
+	                bottom: bottom,
+	                left: left
+	            });
+	        }
+
 	        function chart(selection) {
 	            selection.each(function (data) {
+
+	                // construct the appropriate number of scales, lines, &c.
 	                initSeries();
 
-	                xScale.domain(d3.extent(data, xValue)).range([0, width]);
+	                initLegend();
+
+	                // init scales wih data, and populate them to the axes
+	                xScale.domain(d3.extent(data).map(xValue)).range([0, width]);
 
 	                doForEach(function (i) {
 	                    yScales[i].domain([0, d3.max(data, yValues[i])]).range([height, 0]);
 	                });
 
+	                initAxes();
+
+	                // start drawing the chart
 	                var svg = d3.select(this).selectAll('svg').data([data]).enter().append('svg').attr('class', 'trend-chart-container').attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom);
 
 	                var gInner = svg.append('g').attr('class', 'inner-g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
@@ -51556,11 +51592,16 @@
 	                    gInner.append('path').attr('class', 'trend-line trend-line-' + (i + 1)).attr('d', lines[i]);
 	                });
 
-	                gInner.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')').call(xAxis);
-
-	                var legend = legendFactory().keywords(keywords);
-
+	                // append legend and axes
 	                gInner.call(legend);
+
+	                var axesTranslations = {
+	                    bottom: '0,' + height,
+	                    left: '0,0'
+	                };
+	                for (var orientation in axes) {
+	                    gInner.append('g').attr('class', 'trend-axis trend-axis-' + orientation).attr('transform', 'translate(' + axesTranslations[orientation] + ')').call(axes[orientation]);
+	                }
 	            });
 	        }
 
