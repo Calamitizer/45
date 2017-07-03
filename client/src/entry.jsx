@@ -43,4 +43,7 @@
         .select('body')
         .append('p')
         .text('I\'m dynamically generated');
+
+    const happeningsJSON = require('./trend-chart/popovers/testHappenings.json');
+    console.log(happeningsJSON);
 }());

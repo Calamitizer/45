@@ -5,17 +5,14 @@
 
     const makeSource = require('./make-source.js');
 
-    var makeHappening = function(props) {
-        var happening = {
+    var happening = function(props) {
+        return {
             name: props.name,
             date: props.date,
             sources: props.sources,
-            id: uuid(),
+            id: uuid();
         };
 
-        return happening;
-    };
-
-    module.exports = makeHappening;
+    module.exports = Happening;
 
 }());

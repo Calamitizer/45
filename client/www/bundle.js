@@ -109,6 +109,9 @@
 	    */
 
 	    d3.select('body').append('p').text('I\'m dynamically generated');
+
+	    var happeningsJSON = __webpack_require__(275);
+	    console.log(happeningsJSON);
 	})();
 
 /***/ }),
@@ -51789,6 +51792,51 @@
 
 	    module.exports = legendFactory;
 	})();
+
+/***/ }),
+/* 275 */
+/***/ (function(module, exports) {
+
+	module.exports = {
+		"happenings": [
+			{
+				"name": "Event 1",
+				"date": "1499116159",
+				"sources": [
+					{
+						"name": "Article 1A",
+						"org": "Organization 1",
+						"time": "1499117159",
+						"url": "https://www.reddit.com"
+					},
+					{
+						"name": "Article 1B",
+						"org": "Organization 2",
+						"time": "1499118159",
+						"url": "https://www.google.com"
+					}
+				]
+			},
+			{
+				"name": "Event 2",
+				"date": "1499126159",
+				"sources": [
+					{
+						"name": "Article 2A",
+						"org": "Organization 1",
+						"time": "1499127159",
+						"url": "https://www.reddit.com"
+					},
+					{
+						"name": "Article 2B",
+						"org": "Organization 2",
+						"time": "1499128159",
+						"url": "https://www.google.com"
+					}
+				]
+			}
+		]
+	};
 
 /***/ })
 /******/ ]);

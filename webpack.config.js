@@ -23,6 +23,12 @@
                     exclude: /node_modules/,
                     loader: 'babel',
                 },
+                {
+                    test: /\.json$/,
+                    include: dir.in,
+                    exclude: /node_modules/,
+                    loader: 'json',
+                },
             ],
         },
         watch: true,
